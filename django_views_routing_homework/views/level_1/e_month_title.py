@@ -1,3 +1,4 @@
+import calendar
 from django.http import HttpResponse, HttpResponseNotFound
 
 
@@ -13,10 +14,14 @@ from django.http import HttpResponse, HttpResponseNotFound
 """
 
 
-def get_month_title_by_number(month_number: int):
-    pass  # код писать тут
+def get_month_title_by_number(month_number: int) -> str:
+    if 1 <= month_number <= 12:
+        return calendar.month_name[month_number]
+    return ""
 
 
 def get_month_title_view(request, month_number: int):
-    # код писать тут
-    return HttpResponseNotFound('Месяца с таким номером не существует')
+    month_name = get_month_title_by_number(month_number)
+    if month_name:
+        return HttpResponse(month_name)
+    return HttpResponseNotFound("Месяца с таким номером не существует")
