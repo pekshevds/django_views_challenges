@@ -10,9 +10,11 @@ from django.http import HttpResponse
     2. Результат проверяйте по ссылке http://127.0.0.1:8000/banned/тут интересующий юзернэйм/, 
        например http://127.0.0.1:8000/banned/any_username/
 """
-BANNED_USERNAMES = ['red_dev', 'green_bear', 'monster']
+BANNED_USERNAMES = ["red_dev", "green_bear", "monster"]
 
 
 def is_username_banned_view(request, username: str):
-    # код писать тут
-    return HttpResponse('User not banned')
+    if username in BANNED_USERNAMES:
+        return HttpResponse("User is banned")
+    else:
+        return HttpResponse("User is not banned")
