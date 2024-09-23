@@ -34,11 +34,17 @@ USERNAME_TO_PASSWORD_MAPPER = {
 }
 
 
+def authorization(username: str, password: str) -> bool:
+    return USERNAME_TO_PASSWORD_MAPPER.get(username, "") == password
+
+
 @csrf_exempt
 def process_authorization_view(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        if USERNAME_TO_PASSWORD_MAPPER.get(data.get("username")):
+        if authorization(
+            username=data.get("username", ""), password=data.get("password", "")
+        ):
             return JsonResponse(data={}, status=200)
         return JsonResponse(data={}, status=403)
     else:
