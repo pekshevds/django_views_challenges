@@ -22,28 +22,29 @@ process_authorization_view - обрабатывает заполненные д�
     5. На странице вы увидете сообщение об успехе или неудаче.
 """
 USERNAME_TO_PASSWORD_MAPPER = {
-    'john_doe': 'password123',
-    'sarah_connor': 'terminator2',
-    'admin': 'admin_pass',
-    'coder2021': 'qwerty',
-    'happy_user': '12345',
-    'l33t_h4ck3r': 'leetpassword',
-    'music_lover': 'beethoven',
-    'sports_fan': 'goal2023',
-    'travel_guru': 'wanderlust',
+    "john_doe": "password123",
+    "sarah_connor": "terminator2",
+    "admin": "admin_pass",
+    "coder2021": "qwerty",
+    "happy_user": "12345",
+    "l33t_h4ck3r": "leetpassword",
+    "music_lover": "beethoven",
+    "sports_fan": "goal2023",
+    "travel_guru": "wanderlust",
 }
 
 
 @csrf_exempt
 def process_authorization_view(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         data = json.loads(request.body)
-        # код писать тут
+        if USERNAME_TO_PASSWORD_MAPPER.get(data.get("username")):
+            return JsonResponse(data={}, status=200)
+        return JsonResponse(data={}, status=403)
     else:
-        return HttpResponseNotAllowed(permitted_methods=['POST'])
+        return HttpResponseNotAllowed(permitted_methods=["POST"])
 
 
 # не обращайте внимания на эту вьюху, она нужна лишь для отрисовки страницы авторизации
 def authorization_view(request):
-    return render(request, 'authorization.html')
-
+    return render(request, "authorization.html")
