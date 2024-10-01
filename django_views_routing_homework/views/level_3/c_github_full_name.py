@@ -9,8 +9,16 @@
 - если пользователь на Гитхабе есть, но имя у него не указано, верните None вместо имени
 """
 
-from django.http import HttpResponse, HttpRequest
+import json
+import requests
+from django.http import HttpResponse, HttpRequest, HttpResponseNotFound
 
 
-def fetch_name_from_github_view(request: HttpRequest, github_username: str) -> HttpResponse:
-    pass  # код писать тут
+def fetch_name_from_github_view(
+    request: HttpRequest, github_username: str
+) -> HttpResponse:
+    response = requests.get(f"https://api.github.com/users/{github_username}")
+    if not response.ok:
+        return HttpResponseNotFound()
+    name = json.loads(response.text).get("name")
+    return HttpResponse({"name": name})
