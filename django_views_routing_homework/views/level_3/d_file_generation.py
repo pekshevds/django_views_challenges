@@ -14,8 +14,27 @@
 скачивать сгенерированный файл.
 """
 
-from django.http import HttpResponse, HttpRequest
+import csv
+import random
+import string
+from django.http import HttpResponse, HttpRequest, HttpResponseForbidden
+from django.views.decorators.http import require_http_methods
 
 
+def get_random_string(length):
+    return "".join([random.choice(string.ascii_letters) for _ in range(length)])
+
+
+@require_http_methods(["GET"])
 def generate_file_with_text_view(request: HttpRequest) -> HttpResponse:
-    pass  # код писать тут
+    length = int(request.GET.get("length", "0"))
+    if length < 1 or length > 128:
+        return HttpResponseForbidden()
+    random_string = get_random_string(length)
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={"Content-Disposition": 'attachment; filename="somefilename.csv"'},
+    )
+    writer = csv.writer(response)
+    writer.writerow([random_string])
+    return response
